@@ -1,9 +1,9 @@
 const path = require("path");
 const express = require("express");
 const hbs = require("hbs");
-const { error } = require("console");
-
 const app = express();
+const geoCode = require("./utils/geocode");
+const forecast = require("./utils/forecast");
 
 // absolute path to the public assets.
 const publicDirectoryPath = path.join(__dirname, "../public");
@@ -45,7 +45,33 @@ app.get("/help", (req, res) => {
 });
 
 app.get("/weather", (req, res) => {
-    res.send("Show Weather");
+    const address = req.query.address;
+    if (!address) {
+        return res.send({
+            errorMessage: "Please enter a valid address"
+        });
+    }
+
+    geoCode(address, (error, { latitude, longitude, location } = {}) => {
+
+        if (error) {
+            return res.send({
+                errorMessage: error
+            });
+        }
+        forecast(latitude, longitude, (error, forecast) => {
+            if (error) {
+                return res.send({
+                    errorMessage: error
+                });
+            }
+            res.send({
+                forecast: forecast,
+                location: location,
+                address: req.query.address
+            });
+        })
+    });
 });
 
 app.get("/help/*", (req, res) => {
