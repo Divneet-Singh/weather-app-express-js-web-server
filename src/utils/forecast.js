@@ -1,7 +1,7 @@
 const request = require("postman-request");
 
 const forecast = (latitude, longitude, callback) => {
-    const url = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=&units=metric`
+    const url = `http://api.openweathermap.org/data/2.5/weather?lat=${latitude}&lon=${longitude}&appid=6c347c6375b24c4090410cae649f52fe&units=metric`
 
     request({ url, json: true }, (error, { body }) => {
         if (error) {
